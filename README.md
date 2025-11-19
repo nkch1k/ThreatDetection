@@ -14,7 +14,7 @@ AI-powered IP threat detection and analysis system that aggregates threat intell
 ## Tech Stack
 
 - **Backend**: Python + FastAPI
-- **AI/ML**: Groq (Llama 3.1-70B)
+- **AI/ML**: Groq (Llama 3.3-70B)
 - **HTTP Client**: httpx (async)
 - **CLI**: Click + Rich
 - **Testing**: pytest

@@ -16,7 +16,7 @@ class LLMService:
     def __init__(self, api_key: Optional[str] = None):
         self.api_key = api_key or os.getenv("GROQ_API_KEY")
         self.client = Groq(api_key=self.api_key) if self.api_key else None
-        self.model = "llama-3.1-70b-versatile"
+        self.model = "llama-3.3-70b-versatile"
 
     def _build_prompt(self, ip_address: str, threat_data: ThreatData) -> str:
         """
@@ -83,7 +83,14 @@ Provide ONLY the JSON response, no additional text."""
         # Try LLM analysis first
         if self.client:
             try:
-                analysis = await self._llm_analysis(ip_address, threat_data)
+                import asyncio
+                loop = asyncio.get_event_loop()
+                analysis = await loop.run_in_executor(
+                    None,
+                    self._llm_analysis,
+                    ip_address,
+                    threat_data
+                )
                 if analysis:
                     return analysis
             except Exception as e:
@@ -92,7 +99,7 @@ Provide ONLY the JSON response, no additional text."""
         # Fallback to rule-based analysis
         return self._rule_based_analysis(threat_data)
 
-    async def _llm_analysis(self, ip_address: str, threat_data: ThreatData) -> Optional[AIAnalysis]:
+    def _llm_analysis(self, ip_address: str, threat_data: ThreatData) -> Optional[AIAnalysis]:
         """
         Perform LLM-based analysis using Groq.
 
